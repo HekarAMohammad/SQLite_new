@@ -30,9 +30,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 NAME + " TEXT," + SURNAME + " TEXT," + MARKS + " INTEGER)");
 
     }
-    public boolean insertData(String name,String surname,String marks) {
+    public boolean insertData(String id, String name, String surname, String marks) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
+        contentValues.put("ID",id);
         contentValues.put(NAME,name);
         contentValues.put(SURNAME,surname);
         contentValues.put(MARKS,marks);
@@ -42,6 +43,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         else
             return true;
     }
+    public Cursor getAllData() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("select * from "+TABLE_NAME,null);
+        return res;
+    }
+    public boolean updateData(String id,String name,String surname,String marks) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("ID",id);
+        contentValues.put(NAME,name);
+        contentValues.put(SURNAME,surname);
+        contentValues.put(MARKS,marks);
+        db.update(TABLE_NAME, contentValues, "ID = ?",new String[] { id });
+        return true;
+    }
+
+    public Integer deleteData (String id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(TABLE_NAME, "ID = ?",new String[] {id});
+    }
+
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
